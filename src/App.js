@@ -23,6 +23,7 @@ class App extends React.Component {
   componentDidUpdate() {
     //console.log('after',this.state.isClicked);
     console.log('updated text', this.state.text)
+    console.log('updated totos list', this.state.todos)
   }
 
   // using a ternary operator to change from false to true
@@ -34,24 +35,45 @@ class App extends React.Component {
   // }
 
   handleClick = () => {
-    //console.log('before' ,this.state.isClicked);
+    console.log('before' ,this.state.isClicked);
     this.setState({
       isClicked: !this.state.isClicked,
     });
+
   };
 
   handleChange = (event) => {
-    //console.log('event', event);
-    this.setState({
-      text: event.target.value,
-    })
+    console.log('event', event);
+    this.setState({text: event.target.value})
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault()
+    
+    this.setState({todos: [...this.state.todos, this.state.text]})
+    this.setState({text:""})
+    console.log('checking handleSubmit')
+  }
+
+  
+
+  deleteItem = (index) => {
+    console.log("got clicked", index)
+    let copyOfList = this.state.todos
+    copyOfList.splice(index, 1)
+    this.setState({todos: [...copyOfList]})
   }
 
   render() {
     return (
       <div >
-        <input onChange={this.handleChange} />
-        <button onClick = {this.handleClick} >Click me</button>
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" value={this.state.text} onChange={this.handleChange} ></input>
+          <button type="submit" >Add to list</button>
+        </form>
+        <ol>{this.state.todos.map((todo, index) => {
+              return <li key={index}>{todo}<button onClick={() => {this.deleteItem(index)}} >Remove Item</button> </li>
+            })}</ol>
       </div>
     );
   }
